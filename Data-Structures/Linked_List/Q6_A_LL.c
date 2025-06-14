@@ -84,12 +84,101 @@ int main()
 	return 0;
 }
 
-////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////
 
+/*
+----------------------------------------------------------------------------------
+문제 : 연결리스트를 한 번만 순회하여, 가장 큰 값을 가진 노드를 맨 앞으로 이동시켜라.
+예시 : (30, 20, 40, 70, 50) -> (70, 30, 20, 40 50)
+
+- 처음에 이 문제를 보고 생각한 점들
+	리스트가 비어 있거나 한 개밖에 없나?	→ 아무 것도 하지 말고 return
+	가장 큰 값은 어떻게 찾을 수 있을까?	→ 한 번만 순회하면서 max 추적
+	노드를 앞에 "이동"시킬 때 malloc 필요한가?	→ 기존 노드를 옮기므로 malloc X
+	head를 바꾸려면 어떻게 해야 할까?	→ 이중 포인터(ListNode **) 사용
+
+
+
+
+
+
+
+1. 예외 상황을 먼저 고려
+	리스트가 비어있거나(*ptrHead == NULL) 노드가 하나밖에 없으면((*ptrHead)->next == NULL), 옮길 노드가 없기 때문에 아무것도 하지말고 return.
+
+2. 변수 설계
+	한 번의 순회로 가장 큰 노드를 찾아야 하기 때문에 포인터들이 필요함.
+	maxNode : 최대값을 가진 노드를 가르킴.
+	maxPrev : maxNode의 이전(직전) 노드
+	cur : 순회 중인 현재 노드
+	prev : cur의 이전(직전) 노드
+
+3. 최대값 노드 찾기
+	maxNode가 head보다 더 큰 노드가 있으면 갱신.
+	maxPrev는 maxNode의 바로 앞을 기억 (나중에 노드를 리스트에서 끊어내기 위해 필요)
+
+4. maxNode가 이미 맨 앞이면 return
+	바꿀 필요 없으니까 그냥 return
+ㄴ
+5. maxNode를 리스트 앞(Head)으로 옮기기
+	maxPrev->next = maxNode->next; → 기존 위치에서 maxNode 끊기
+	maxNode->next = *ptrHead; → maxNode가 기존 head를 가리키게
+	*ptrHead = maxNode; → maxNode를 head로 만들기
+
+----------------------------------------------------------------------------------
+*/
+
+// moveMaxToFront 의 함수는 리스트의 Head 포인터의 주소를 인자로 받음.
+// ListNode **ptrhead는 ListNode *ptrhead를 수정할 수 있도록 이중포인터로 전달.
 int moveMaxToFront(ListNode **ptrHead)
 {
-    /* add your code here */
+	// 예외처리.
+    if (ptrHead == NULL || *ptrHead == NULL || (*ptrHead)->next == NULL)
+        return 0;
+
+	// maxNode는 현재까지 찾은 최대값의 노드를 가르킴 -> 초기값은 head
+	// maxPrev는 maxNode의 이전 노드를 추적하기 위한 포인터
+	// 만약, 최대값이 맨 앞이면, maxPrev는 NULL을 가짐.
+    ListNode *maxNode = *ptrHead;
+    ListNode *maxPrev = NULL;
+
+	// 연결 리스트를 순회하기 위한 포인터
+	// prev : 현재 노드의 이전 노드
+	// cur : 현재 검사중인 노트 (head의 다음부터 시작)
+    ListNode *prev = *ptrHead;
+    ListNode *cur = (*ptrHead)->next;
+
+	// 리스트의 끝까지 반복
+    while (cur != NULL) {
+		// 현재 노드(cur)의 값이 지금까지의 최대값(maxNode)보다 크면,
+		// maxNode를 업데이트하고,
+		// maxPrev도 현재 이전 노드인 Prev로 업데이트
+        if (cur->item > maxNode->item) {
+            maxNode = cur;
+            maxPrev = prev;
+        }
+		// 다음 노드로 이동할려고 하나씩 이동
+        prev = cur;
+        cur = cur->next;
+    }
+
+	// 최댓값 노드가 맨 앞이면, 이동할 필요가 없으니, 그냥 종료
+    if (maxPrev == NULL)
+        return 0;
+
+	// 최대값 노드를 리스트에서 제거
+	// maxPrev가 maxNode를 건너뛰고, maxNode의 다음 노드를 가리키게 함.
+    maxPrev->next = maxNode->next;
+
+	// maxNode의 다음 포인터를 기존 head로 연결
+	// 즉, maxNode가 새로운 첫 번째 노드가 되기 위한 연결 작업
+    maxNode->next = *ptrHead;
+	// 리스트의 head 포인터를 maxNode로 갱신
+    *ptrHead = maxNode;
+
+    return 0;
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////
 
