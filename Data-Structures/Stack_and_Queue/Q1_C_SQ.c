@@ -113,16 +113,36 @@ int main()
 
 
 //////////////////////////////////////////////////////////////////////////////////
-
+// C 함수를 작성하여 연결 리스트에 저장된 모든 정수를 enqueuing하여 큐(연결 리스트 기반)를 생성하세요.
+// 연결 리스트의 첫 번째 노드가 먼저 enqueuing되고, 그 다음 두 번째 노드 등이 됩니다.
+// 큐가 비어있지 않다면 시작 시 큐를 비워야 함을 기억하세요
 void createQueueFromLinkedList(LinkedList *ll, Queue *q)
 {
-	/* add your code here */
+    if (ll == NULL || q == NULL) return;
+
+    removeAllItemsFromQueue(q);
+
+    ListNode *cur = ll->head;
+    while (cur != NULL) {
+        enqueue(q, cur->item);
+        cur = cur->next;
+    }
 }
+
 
 void removeOddValues(Queue *q)
 {
-	/* add your code here */
+    if (q == NULL) return;
+
+    int size = q->ll.size;
+    for (int i = 0; i < size; i++) {
+        int val = dequeue(q);
+        if (val % 2 == 0) {
+            enqueue(q, val);
+        }
+    }
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////
 

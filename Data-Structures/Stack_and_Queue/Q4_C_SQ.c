@@ -12,6 +12,7 @@ Purpose: Implementing the required functions for Question 4 */
 
 //////////////////////////////////   linked list /////////////////////////////////
 
+
 typedef struct _listnode{
    int item;
    struct _listnode *next;
@@ -112,8 +113,24 @@ int main()
 
 void reverse(Queue *q)
 {
-/* add your code here */
+    Stack tempStack;
+    tempStack.ll.head = NULL;
+    tempStack.ll.size = 0;
+    tempStack.ll.tail = NULL;
+
+    // 큐에서 모든 원소를 꺼내서 스택에 넣는다
+    while (!isEmptyQueue(q)) {
+        int item = dequeue(q);
+        push(&tempStack, item);
+    }
+
+    // 스택에서 꺼내서 큐에 다시 넣는다 (역순 삽입됨)
+    while (!isEmptyStack(&tempStack)) {
+        int item = pop(&tempStack);
+        enqueue(q, item);
+    }
 }
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////
 

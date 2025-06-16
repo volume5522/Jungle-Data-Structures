@@ -104,8 +104,38 @@ int main()
 ////////////////////////////////////////////////////////////
 int balanced(char *expression)
 {
-/* add your code here */
+    Stack s;
+    s.ll.head = NULL;
+    s.ll.size = 0;
+
+    for (int i = 0; expression[i] != '\0'; i++) {
+        char ch = expression[i];
+
+        if (ch == '(' || ch == '[' || ch == '{') {
+            push(&s, ch);
+        }
+        else if (ch == ')' || ch == ']' || ch == '}') {
+            if (isEmptyStack(&s)) {
+                return 1;
+            }
+
+            char top = pop(&s);
+
+            if ((ch == ')' && top != '(') ||
+                (ch == ']' && top != '[') ||
+                (ch == '}' && top != '{')) {
+                return 1;
+            }
+        }
+    }
+
+    // 모두 확인 후, 남아있는 여는 괄호가 있다면 불균형
+    if (!isEmptyStack(&s))
+        return 1;
+
+    return 0; // 균형 잡힌 경우
 }
+
 
 ////////////////////////////////////////////////////////////
 

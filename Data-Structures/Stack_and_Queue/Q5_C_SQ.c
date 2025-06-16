@@ -11,7 +11,8 @@ Purpose: Implementing the required functions for Question 5 */
 
 //////////////////////////////////////////////////////////////////////////////////
 
-typedef struct _listnode
+
+typedef struct _listnode 
 {
 	int item;
 	struct _listnode *next;
@@ -109,8 +110,14 @@ int main()
 
 void recursiveReverse(Queue *q)
 {
-/* add your code here */
+    if (isEmptyQueue(q))
+        return;
+
+    int front = dequeue(q);
+    recursiveReverse(q);
+    enqueue(q, front);
 }
+
 
 //////////////////////////////////////////////////////////////////
 

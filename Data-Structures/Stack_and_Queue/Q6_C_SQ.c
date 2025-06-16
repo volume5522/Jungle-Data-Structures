@@ -11,6 +11,7 @@ Purpose: Implementing the required functions for Question 6 */
 
 #define MIN_INT -1000
 
+
 //////////////////////////////////////////////////////////////////////////////////
 
 typedef struct _listnode
@@ -111,8 +112,13 @@ int main()
 
 void removeUntil(Stack *s, int value)
 {
-/* add your code here */
+    // 스택이 비어있지 않고, 맨 위 값이 value가 아닐 때까지 pop
+    while (!isEmptyStack(s) && peek(s) != value) {
+        pop(s);
+    }
+    // value가 없을 경우 스택은 모두 제거
 }
+
 
 //////////////////////////////////////////////////////////////////////////////////
 
