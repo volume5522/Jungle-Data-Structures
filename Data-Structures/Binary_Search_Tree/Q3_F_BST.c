@@ -88,11 +88,89 @@ int main()
 }
 
 //////////////////////////////////////////////////////////////////////////////////
+/*
+문제 : 전위 순회 결과를 출력하는 함수 preOrderIterative(BSTNode *root)를 반복문 방식으로 작성 (단, pop()이랑 push()만 사용)
+출력 : 20, 15, 10, 18, 50, 25, 80
 
-void preOrderIterative(BSTNode *root)
-{
-	 /* add your code here */
+
+생각해야할 것
+- root == NULL이면 아무 것도 출력하지 않음
+- 스택 초기화는 반드시 해야 함 (기존에 스택에 남은 값이 있으면 안 됨)
+- push/pop 외 다른 스택 접근 방식은 사용 금지
+
+접근 방법:
+1. 스택 초기화
+2. 루트 노드가 NULL이면 종료
+3. 루트를 스택에 push
+4. 스택이 비어있지 않을 때까지 다음 반복 수행:
+	스택에서 pop한 노드를 출력
+	오른쪽 자식이 있으면 먼저 push 
+	왼쪽 자식이 있으면 나중에 push
+
+왜 오른쪽을 먼저 push?
+스택은 LIFO 구조이므로 먼저 push한 오른쪽이 나중에 pop
+따라서 전위 순회 순서인 Root → Left → Right를 유지하기 위해서 Right → Left 순으로 push
+
+알고리즘 흐름
+1. push(20)
+2. pop → 20 출력 → push(50) → push(15)
+3. pop → 15 출력 → push(18) → push(10)
+4. pop → 10 출력
+5. pop → 18 출력
+6. pop → 50 출력 → push(80) → push(25)
+7. pop → 25 출력
+8. pop → 80 출력
+
+
+*/
+void preOrderIterative(BSTNode *root) {
+    // 예외 처리: 트리가 비어있으면 아무 작업도 수행하지 않음
+    if (root == NULL) return;
+
+    // 스택 초기화 (전위 순회를 위한 스택 사용)
+    Stack s;
+    s.top = NULL;
+
+    // 루트 노드를 스택에 push (전위 순회 시작점)
+    push(&s, root);
+
+    // 스택이 비어있을 때까지 반복
+    while (!isEmpty(&s)) {
+        // 현재 스택의 top 노드를 pop하여 방문
+        BSTNode *node = pop(&s);
+
+        // 노드의 값 출력 (전위 순회: Root → Left → Right)
+        printf("%d ", node->item);
+
+        // 스택은 후입선출(LIFO)이므로, 오른쪽 자식을 먼저 push
+        // 이렇게 해야 다음 루프에서 왼쪽 자식이 먼저 pop되어 순서 유지됨
+        if (node->right) push(&s, node->right);
+        if (node->left)  push(&s, node->left);
+    }
 }
+
+/*
+재귀함수로 짠것.											
+| 항목        | 재귀 함수 방식                                           | 반복문 + 명시적 스택 방식                          |
+| ----------- | ---------------------------------------------           | --------------------------------                  |
+| 스택 사용   | 컴파일러의 함수 호출 스택(Call Stack) 자동 사용            | 사용자가 직접 만든 Stack 구조 사용                 |
+| 명시성      | 숨겨진 스택 사용 (코드에 없음)                            | 스택 조작이 코드에 명시됨 (`push`, `pop`)          |
+| 구현 난이도 | 간결하고 직관적임                                         | 더 복잡하지만 컨트롤 명확*                         |
+| 메모리 제어 | 호출 깊이만큼 Call Stack 소비 (Stack Overflow 위험)       | 스택 오버플로우 방지 가능, 직접 크기 조절 가능      |
+| 디버깅      | 함수 호출이 깊어질수록 디버깅 어려움                       | 명시적 스택 조작이라 디버깅 용이함                  |
+| 반복 제어   | 종료 조건이 함수 리턴 조건에 내포됨                        | `while (!isEmpty())` 등 명시적 제어 필요            |
+| 사용 환경   | 순회 깊이가 적은 트리에 적합                               | 깊이가 깊거나 호출 제약 있는 환경에 유리            |
+
+
+
+void preOrderRecursive(BSTNode *root) {
+    if (root == NULL) return;
+    printf("%d ", root->item);
+    preOrderRecursive(root->left);
+    preOrderRecursive(root->right);
+}
+*/
+
 
 ///////////////////////////////////////////////////////////////////////////////
 

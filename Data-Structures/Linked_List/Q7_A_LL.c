@@ -98,7 +98,6 @@ void RecursiveReverse(ListNode **ptrHead)
     *ptrHead = rest;
 }
 
-
 //////////////////////////////////////////////////////////////////////////////////
 
 void printList(LinkedList *ll){
